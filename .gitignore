@@ -1,0 +1,48 @@
+# ============================================================
+# .gitignore — Job Board Application (Spring Boot + Maven)
+# ============================================================
+
+# ----- Compiled output -----
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ----- Maven -----
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ----- Spring Boot -----
+spring-shell.log
+
+# ----- IntelliJ IDEA -----
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ----- Environment & Secrets -----
+application-local.properties
+application-prod.properties
+application.properties
+*.env
+.env
+.env.*
+
+# ----- Logs -----
+logs/
+*.log
+
+#----- OS -----
+.DS_Store
+Thumbs.db
+
+# ----- Docker -----
+docker-compose.override.yml
+
+# ----- Test output -----
+/test-output/
+surefire-reports/
