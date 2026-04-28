@@ -17,7 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +32,10 @@ public class ApplicationService {
     private final JobService jobService;
     private final FileUploadService fileUploadService;
     private final EmailService emailService;
-    private final ChatModel chatModel;
+//    private final ChatModel chatModel;
+
+    private final RestClient groqRestClient;      // <-- add this
+    private final String groqModelName;           // <-- add this
 
     // ── Helper ──
     private User getCurrentUser() {
@@ -174,11 +181,27 @@ public class ApplicationService {
         // We send the job details and ask AI to evaluate the match
         String prompt = buildAiPrompt(job, application);
 
-        String aiResponse = ChatClient.create(chatModel)
-                .prompt()
-                .user(prompt)
-                .call()
-                .content();
+//        String aiResponse = ChatClient.create(chatModel)
+//                .prompt()
+//                .user(prompt)
+//                .call()
+//                .content();
+        String aiResponse;
+        try {
+            aiResponse = callGroqChatCompletions(prompt);
+        } catch (Exception e) {
+            log.error("AI analysis failed: {}", e.getMessage());
+            // Return graceful response instead of 500
+            return new AiMatchResponse(
+                    applicationId,
+                    candidate.getName(),
+                    job.getTitle(),
+                    null,
+                    "AI analysis temporarily unavailable. Please try again later.",
+                    null,
+                    null
+            );
+        }
 
         // Parse AI response into structured fields
         AiAnalysisResult result = parseAiResponse(aiResponse);
@@ -201,7 +224,35 @@ public class ApplicationService {
                 result.strengths()
         );
     }
+    private String callGroqChatCompletions(String prompt) {
+        try {
+            // Build request body as a Map
+            Map<String, Object> requestBody = Map.of(
+                    "model", groqModelName,
+                    "messages", List.of(Map.of("role", "user", "content", prompt)),
+                    "temperature", 0.7
+            );
 
+            // Call Groq API
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = groqRestClient.post()
+                    .uri("/chat/completions")
+                    .body(requestBody)
+                    .retrieve()
+                    .body(Map.class);
+
+            // Extract the content from the response
+            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
+            if (choices != null && !choices.isEmpty()) {
+                Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+                return (String) message.get("content");
+            }
+            throw new RuntimeException("No choices returned from Groq");
+        } catch (Exception e) {
+            log.error("Groq API call failed: {}", e.getMessage(), e);
+            return "SCORE: 50\nSUMMARY: AI analysis temporarily unavailable.\nSTRENGTHS: \nSKILL_GAPS: ";
+        }
+    }
     // ── AI Prompt Builder ──
     private String buildAiPrompt(Job job, Application application) {
         return """
