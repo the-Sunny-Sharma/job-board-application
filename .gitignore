@@ -28,6 +28,7 @@ out/
 application-local.properties
 application-prod.properties
 application.properties
+application-dev.properties
 *.env
 .env
 .env.*
