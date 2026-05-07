@@ -31,13 +31,12 @@ services:
     ports:
       - "8082:8082"
     environment:
-      # ── These are the exact variable names your application-prod expects ──
+      SPRING_PROFILES_ACTIVE: prod
       MYSQLHOST: mysql-db
       MYSQLPORT: 3306
       MYSQL_DATABASE: jobboard_db
       MYSQLUSER: ${DB_USERNAME}
       MYSQLPASSWORD: ${DB_PASSWORD}
-      # ── All other environment variables stay the same ──
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
