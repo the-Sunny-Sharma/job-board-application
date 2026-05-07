@@ -82,19 +82,36 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ✅ ADD THIS BEAN
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+    //     CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowCredentials(true);
+    //     config.setAllowedOrigins(List.of("http://localhost:5173")); // your frontend origin
+    //     config.setAllowedHeaders(List.of("*"));
+    //     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    //     config.setExposedHeaders(List.of("Authorization")); // if you need to expose JWT header
+
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", config);
+    //     return source;
+    // }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:5173")); // your frontend origin
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setExposedHeaders(List.of("Authorization")); // if you need to expose JWT header
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    // Replace setAllowedOrigins with allowedOriginPatterns for Vercel preview domains
+    config.setAllowedOriginPatterns(List.of(
+        "http://localhost:5173",           // local development
+        "https://*.vercel.app"             // all Vercel preview/production deployments
+    ));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    config.setExposedHeaders(List.of("Authorization"));
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
     }
 
     @Bean
