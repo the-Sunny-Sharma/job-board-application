@@ -5,10 +5,10 @@ services:
     container_name: jobboard-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: jobboard_db
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQLUSER}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
@@ -35,8 +35,8 @@ services:
       MYSQLHOST: mysql-db
       MYSQLPORT: 3306
       MYSQL_DATABASE: jobboard_db
-      MYSQLUSER: ${DB_USERNAME}
-      MYSQLPASSWORD: ${DB_PASSWORD}
+      MYSQLUSER: ${MYSQLUSER}
+      MYSQLPASSWORD: ${MYSQL_ROOT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
