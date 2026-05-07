@@ -12,12 +12,12 @@ import ProtectedRoute from './components/ProtectedRoute'
 // 🔖 Lazy loading all pages
 // Each page becomes a separate JS chunk
 // Downloaded only when user navigates to it
-// const Home               = lazy(() => import('./pages/Home'))
-// const JobDetail          = lazy(() => import('./pages/JobDetail'))
-// const Login              = lazy(() => import('./pages/Login'))
-// const Register           = lazy(() => import('./pages/Register'))
-// const CandidateDashboard = lazy(() => import('./pages/CandidateDashboard'))
-// const AdminDashboard     = lazy(() => import('./pages/AdminDashboard'))
+const Home               = lazy(() => import('./pages/Home'))
+const JobDetail          = lazy(() => import('./pages/JobDetail'))
+const Login              = lazy(() => import('./pages/Login'))
+const Register           = lazy(() => import('./pages/Register'))
+const CandidateDashboard = lazy(() => import('./pages/CandidateDashboard'))
+const AdminDashboard     = lazy(() => import('./pages/AdminDashboard'))
 
 // 🔖 QueryClient config
 const queryClient = new QueryClient({
