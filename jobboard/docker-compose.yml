@@ -32,9 +32,9 @@ services:
       - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      MYSQLHOST: mysql-db
+      MYSQLHOST: mysql.railway.internal
       MYSQLPORT: 3306
-      MYSQL_DATABASE: jobboard_db
+      MYSQL_DATABASE: railway
       MYSQLUSER: ${MYSQLUSER}
       MYSQLPASSWORD: ${MYSQL_ROOT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
